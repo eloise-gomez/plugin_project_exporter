@@ -24,7 +24,6 @@
             "name": "api_key",
             "label": "Remote API key",
             "type": "STRING",
-            "defaultValue": "P0BRG0EVW8WXU3OELV53MG0QPDSV9S23",
             "description": "Specify the API key of the destination instance. (Required)",
             "mandatory": true
         },
