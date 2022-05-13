@@ -1,0 +1,47 @@
+{
+    "meta": {
+        "label": "Internal -  Export project ",
+        "description": "Export projects from instance with associated code env.",
+        "icon": "icon-share-alt"
+    },
+    "impersonate": false,
+    "permissions": ['ADMIN'],
+    "resultType": "HTML",
+    "resultLabel": "Migration",
+    "extension": "txt",
+    "mimeType": "text/plain",
+    "macroRoles": [],
+    "paramsPythonSetup": "get_projects.py",
+    "params": [
+        {
+            "name": "remote_host",
+            "label": "Source Instance Address",
+            "type": "STRING",
+            "description": "Specify the location (URL) of the instance to copy the project to. (Required)",
+            "mandatory": true
+        },
+        {
+            "name": "api_key",
+            "label": "Remote API key",
+            "type": "STRING",
+            "defaultValue": "P0BRG0EVW8WXU3OELV53MG0QPDSV9S23",
+            "description": "Specify the API key of the destination instance. (Required)",
+            "mandatory": true
+        },
+        {
+            "name": "project_to_import",
+            "label": "Project ID",
+            "type": "SELECT",
+            "getChoicesFromPython": true,
+            "description": "Specify the project you want to import (Required)",
+            "mandatory": true
+        },
+        {
+            "name": "ignore_ssl_certs",
+            "label" : "Ignore SSL Certificates",
+            "type": "BOOLEAN",
+            "defaultValue": false,
+            "description": "If selected, ignores SSL certificates on remote instance."
+        }
+    ]
+}
