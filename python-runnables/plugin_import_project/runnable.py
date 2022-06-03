@@ -99,39 +99,29 @@ class MyRunnable(Runnable):
         for codenv in codenvs_to_create:
             self.create_codenv_instance(codenv, remote_client, local_client)
 
-        # Create Bundle on local instance
+        # Import project
         project = local_client.get_project(project_to_import)
-        project.export_bundle(project_to_import + "_bundle-" + today)
-        project.download_exported_bundle_archive_to_file(project_to_import + "_bundle-" + today,
-                                                         project_to_import + "_bundle-"+ today+".zip")
-        html += "<div> Bundle " + project_to_import + "_bundle-" + today +" was created"
-
-        # Import bundle on remote instance
-        if not (os.path.exists(project_to_import + "_bundle-" + today + ".zip")):
-            html += "<div> Bundle file named ", project_to_import + "_bundle-" + today +".zip does not exist, cancelling"
-            sys.exit(1)
-
-        bundle_file_stream = open(project_to_import + "_bundle-" + today+".zip", 'rb')
+        project_file = project_to_import + "_bundle-" + today
+        options = {
+                    "exportUploads" : True,
+                    "exportManagedFS" : True,
+                    "exportAnalysisModels" : True,
+                    "exportSavedModels" : True,
+                    "exportManagedFolders" : True,
+                    "exportAllInputDatasets": True,
+                    "exportAllInputDatasets" : True,
+                    "exportAllInputDatasets" : True,
+                    "exportAllDatasets" : True,
+                    "exportAllInputManagedFolders" : True
+        }
+        project.export_to_file(project_file, options=options)
+        print('Successfully created project export')
 
         if project_to_import in remote_client.list_project_keys():
-            test_project = local_client.get_project(project_to_import)
-            test_project.import_bundle_from_stream(bundle_file_stream)
+            html += "<div>\n The project already exists in the remote host "
         else:
-            remote_client.create_project_from_bundle_archive(bundle_file_stream)
-            test_project = remote_client.get_project(project_to_import)
-
-        # Activate Bundle
-        latest_bundle = test_project.list_imported_bundles()["bundles"][-1]["bundleId"]
-        html += "<div> Using latest bundle defined as " + latest_bundle
-
-        preload_result = test_project.preload_bundle(latest_bundle)
-        print("Preload result =", json.dumps(preload_result, indent=4))
-        try:
-            activation_result = test_project.activate_bundle(latest_bundle)
-            html += "<div> Activation result = " + json.dumps(activation_result, indent=4)
-        except:
-            html += "<div> Exception when activating bundle, cancelling operation"
-            sys.exit(1)
-
+            with open(project_file, "rb") as f:
+                remote_client.prepare_project_import(f).execute()
+                html += "<div> Successfully imported project <div>"
         html += '</div>'
         return html
