@@ -30,8 +30,7 @@
         {
             "name": "project_to_import",
             "label": "Project ID",
-            "type": "SELECT",
-            "getChoicesFromPython": true,
+            "type": "STRING",
             "description": "Specify the project you want to import (Required)",
             "mandatory": true
         },
